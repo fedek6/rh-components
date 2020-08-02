@@ -4,6 +4,8 @@ Based on [webgl instancing performacne demo](https://github.com/mrdoob/three.js/
 
 Three.js installation guide can be found [here](https://threejs.org/docs/index.html#manual/en/introduction/Installation).
 
+Postprocessing tutorial [here](https://threejsfundamentals.org/threejs/lessons/threejs-post-processing.html).
+
 ## Starter pack
 
 https://github.com/wbkd/webpack-starter
