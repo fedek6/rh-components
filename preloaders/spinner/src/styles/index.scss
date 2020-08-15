@@ -1,0 +1,16 @@
+body {
+  min-width: 100vw;
+  min-height: 100vh;
+  padding: 0 0;
+  margin: 0 0;
+
+  &.-loading {
+    overflow: hidden;
+  }
+}
+
+main {
+  overflow: auto;
+}
+
+@import "../components/molecules/preloader/preloader.scss";

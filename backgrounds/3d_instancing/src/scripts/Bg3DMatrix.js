@@ -120,7 +120,7 @@ export default class {
     const gltfLoader = new GLTFLoader();
     
     return new Promise(  (resolve, reject) => {
-      gltfLoader.load('public/models/rock/model.gltf', (gltf) => {
+      gltfLoader.load('public/models/disney/model.gltf', (gltf) => {
         const material = new THREE.MeshNormalMaterial();
 
 
@@ -134,9 +134,14 @@ export default class {
         const object = gltf.scene;
  
 
-        object.scale.x = 0.001;
-        object.scale.y = 0.001;
-        object.scale.z = 0.001;
+        //object.scale.x = 0.001;
+        //object.scale.y = 0.001;
+        //object.scale.z = 0.001;
+
+
+        //object.scale.x = 100;
+        //object.scale.y = 100;
+        // object.scale.z = 100;
 
         const box = new THREE.Box3().setFromObject( object );
         const center = box.getCenter( new THREE.Vector3() );
@@ -145,18 +150,27 @@ export default class {
         object.position.y += ( object.position.y - center.y );
         object.position.z += ( object.position.z - center.z );
 
-        let extract = object.getObjectByName( "Rock_02_LOD0" );
+        //let extract = object.getObjectByName( "Rock_02_LOD0" );
+
+        let extract = object.getObjectByName( "DisneyHead_lores_Disney_lores" );
+        
+        // let extract = object.scene;
+
         extract.material = material;
 
-        extract.scale.x = 0.001;
-        extract.scale.y = 0.001;
-        extract.scale.z = 0.001;
+        //extract.scale.x = 0.001;
+        //extract.scale.y = 0.001;
+        // extract.scale.z = 0.001;
+
+        //extract.scale.x = 2005456735413211322360;
+        //extract.scale.y = 200543545340;
+        //extract.scale.z = 2000;
 
 
-        object.traverse((o) => {
-          // console.log(o);
-          if (o.isMesh) o.material = lambertWhiteMaterial;
-        });
+        /* object.traverse((o) => {
+          console.log(o);
+          if (o.isMesh) o.material = material;
+        }); */
 
         resolve(extract);
       });
@@ -170,9 +184,15 @@ export default class {
     var quaternion = new THREE.Quaternion();
     var scale = new THREE.Vector3();
 
-    position.x = Math.random() * 10 - 5;
-    position.y = Math.random() * 10 - 5;
-    position.z = Math.random() * 10 - 5;
+    const spreadMin = 5;
+    const spreadMax = 10;
+
+    const sizeMin = 0.001;
+    const sizeMax = 0.012;
+
+    position.x = Math.random() * spreadMax - spreadMin;
+    position.y = Math.random() * spreadMax - spreadMin;
+    position.z = Math.random() * spreadMax - spreadMin;
 
     rotation.x = Math.random() * 2 * Math.PI;
     rotation.y = Math.random() * 2 * Math.PI;
@@ -181,7 +201,7 @@ export default class {
     quaternion.setFromEuler( rotation );
 
     // scale.x = scale.y = scale.z = Math.random() * 1;
-    scale.x = scale.y = scale.z = Math.random() * 0.005;
+    scale.x = scale.y = scale.z = (Math.random() * (sizeMax - sizeMin) + sizeMin);
 
     matrix.compose( position, quaternion, scale );
   }

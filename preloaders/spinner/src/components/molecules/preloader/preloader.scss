@@ -1,0 +1,80 @@
+/// Background color.
+/// @type Color
+$m-preloader-bg-color: Black !default;
+
+/// Animation speed.
+/// @type Time
+$m-animation-speed: 1500ms !default;
+
+/// Hide animation speed.
+/// @type Time
+$m-hide-animation-speed: 1000ms !default;
+
+/// Spinner preloader.
+///
+/// @methodology ABEM
+/// @link https://css-tricks.com/abem-useful-adaptation-bem/
+/// @author Konrad Fedorczyk <konrad.fedorczyk@realhe.ro>
+.m-preloader {
+  z-index: 9999;
+  display: none;
+  transition: opacity $m-hide-animation-speed ease-out;
+  opacity: 0;
+
+  ///
+  /// Active modifier.
+  ///
+  &.-active {
+    display: block;
+    background-color: $m-preloader-bg-color;
+
+    min-width: 100vw;
+    min-height: 100vh;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  ///
+  /// Hide modifier
+  ///
+  &.-hide {
+    opacity: 0;
+  }
+
+  ///
+  /// Show modifier
+  ///
+  &.-show {
+    opacity: 1;
+  }
+
+  ///
+  /// Internal spinning indicator.
+  ///
+  &__indicator {
+    height: 64px;
+    width: 64px;
+  
+    animation-name: spin;
+    animation-duration: $m-animation-speed;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+  
+  ///
+  /// Animations.
+  ///
+  @keyframes spin { 
+    from { 
+      transform: rotate(0deg); 
+    } to { 
+      transform: rotate(360deg); 
+    }
+  }
+}
