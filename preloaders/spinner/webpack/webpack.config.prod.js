@@ -1,6 +1,7 @@
 const Webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CriticalPlugin = require('webpack-plugin-critical').CriticalPlugin;
 const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
@@ -20,6 +21,12 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: 'bundle.css',
     }),
+    new CriticalPlugin({
+      src: 'index.html',
+      inline: true,
+      minify: true,
+      dest: 'index.html'
+    })
   ],
   module: {
     rules: [

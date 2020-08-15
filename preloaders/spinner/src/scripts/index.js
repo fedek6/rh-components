@@ -17,15 +17,7 @@ function log(txt) {
   logs.appendChild(logEntry);
 }
 
-
 // Hide preloader on content loaded.
-document.addEventListener("DOMContentLoaded", (event) => { 
+window.addEventListener('load', () => {
   MainPreloader.hidePreloader().then(log);
-}); 
-
-// Test show & hide.
-setInterval(() => {
-  MainPreloader.showPreloader().then(log);
-
-  setTimeout(() => MainPreloader.hidePreloader().then(log), 2000);
-}, 4000);
+});

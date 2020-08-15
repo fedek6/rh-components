@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 MainPreloader.showPreloader().then((state) => console.log('preloader state', state));
 ```
 
+https://github.com/lukeed/webpack-critical
 
 ## Demo 
 

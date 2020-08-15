@@ -14,3 +14,8 @@ main {
 }
 
 @import "../components/molecules/preloader/preloader.scss";
+
+// Test if this will end up in critical CSS section.
+.gigalo-ninja {
+  height: 1000px;
+}
