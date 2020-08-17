@@ -1,4 +1,6 @@
 import '../styles/index.scss';
+
+// import(/* webpackPreload: true */ "../components/molecules/preloader/preloader.scss");
 import Preloader from "../components/molecules/preloader/preloader";
 
 if (process.env.NODE_ENV === 'development') {
