@@ -6,6 +6,9 @@ Three.js installation guide can be found [here](https://threejs.org/docs/index.h
 
 Postprocessing tutorial [here](https://threejsfundamentals.org/threejs/lessons/threejs-post-processing.html).
 
+Range selector styling tutorial [here](https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/).
+
+
 ## Starter pack
 
 https://github.com/wbkd/webpack-starter
