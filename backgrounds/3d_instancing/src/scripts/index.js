@@ -16,12 +16,13 @@ setTimeout(() => {
   // bgRenderer.initObjects();
 }, 5000);
 
-/* setInterval(() => {
-  controlApi.rotationYSpeed += 0.000001;
-  controlApi.rotationZSpeed += 0.000001;
-  controlApi.count += 10;
+setInterval(() => {
+  controlApi.rotationYSpeed += 0.0000001;
+  controlApi.rotationZSpeed += 0.0000001;
+  controlApi.count += 1;
+  controlApi.cameraZPosition += 1;
   bgRenderer.reset();
-}, 2000); */
+}, 2000); 
 
 
 window.addEventListener( 'resize', () => bgRenderer.resize(), false );

@@ -28,7 +28,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'; */
 export let api = {
   count: 120,
   rotationYSpeed: 0.01,
-  rotationZSpeed: 0.01
+  rotationZSpeed: 0.01,
+  cameraZPosition: 8
 };
 
 /** Class for rendering 3D matrix */
@@ -40,6 +41,7 @@ export class Bg3DMatrix {
   constructor({downgradeResolution = false, api = api} = {}) {
     this.downgradeResolution = downgradeResolution;
     this.api = api;
+    this.animating = false;
 
     this.init();
     this.initObjects();
@@ -57,14 +59,14 @@ export class Bg3DMatrix {
     this.scene.fog =  new Fog(fogColor, 0.025, 18);
     // If you want to set bg color.
     // this.scene.background = new Color( 0xFFFFFF );
-    this.camera.position.z = 8;
+    this.camera.position.z = this.api.cameraZPosition;
   }
 
   /**
    * Init scene objets and animate.
    */
   initObjects() {
-    let promise = this.createGltf().then((result) => {
+    this.createGltf().then((result) => {
       this.model = result;
       // const material = new MeshNormalMaterial();
 
@@ -86,7 +88,10 @@ export class Bg3DMatrix {
 
       this.scene.add(this.mesh  );
     }).then(() => {
-      this.animate();
+      if (!this.animating) {
+        this.animating = true;
+        this.animate();
+      }
     });
   }
 
@@ -108,6 +113,7 @@ export class Bg3DMatrix {
   }
 
   reset() {
+    this.camera.position.z = this.api.cameraZPosition;
     this.cleanObjects();
     this.initObjects();
   }
