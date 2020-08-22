@@ -1,20 +1,48 @@
-import * as THREE from 'three';
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module';
-import Stats from 'three/examples/jsm/libs/stats.module';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import {
+  DoubleSide, 
+  Color, 
+  Fog, 
+  MeshStandardMaterial, 
+  Matrix4, 
+  InstancedMesh, 
+  Scene, 
+  PerspectiveCamera, 
+  WebGLRenderer, 
+  PointLight, 
+  BoxGeometry,
+  MeshNormalMaterial, 
+  Mesh, 
+  Box3, 
+  Vector3, 
+  Euler, 
+  Quaternion
+} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+
+/* import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module';
+import Stats from 'three/examples/jsm/libs/stats.module';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'; */
+
+export let api = {
+  count: 120,
+  rotationYSpeed: 0.01,
+  rotationZSpeed: 0.01
+};
+
 /** Class for rendering 3D matrix */
-export default class {
+export class Bg3DMatrix {
   /**
    * Create 3D background.
    * @param {*} options
    */
-  constructor({downgradeResolution = false } = {}) {
+  constructor({downgradeResolution = false, api = api} = {}) {
     this.downgradeResolution = downgradeResolution;
+    this.api = api;
 
     this.init();
+    this.initObjects();
   }
 
   /**
@@ -25,25 +53,33 @@ export default class {
 
     //this.cube = this.createCube();
     // this.scene.add(this.cube);
-    var fogColor = new THREE.Color(0xdedede);
-    this.scene.fog =  new THREE.Fog(fogColor, 0.025, 18);
+    var fogColor = new Color(0xdedede);
+    this.scene.fog =  new Fog(fogColor, 0.025, 18);
+    // If you want to set bg color.
+    // this.scene.background = new Color( 0xFFFFFF );
+    this.camera.position.z = 8;
+  }
 
+  /**
+   * Init scene objets and animate.
+   */
+  initObjects() {
     let promise = this.createGltf().then((result) => {
       this.model = result;
-      // const material = new THREE.MeshNormalMaterial();
+      // const material = new MeshNormalMaterial();
 
 
-      const material = new THREE.MeshStandardMaterial({
+      const material = new MeshStandardMaterial({
         color: 0x2b2b2b, 
-        side: THREE.DoubleSide,
+        side: DoubleSide,
         emissive: 0x777777,
         opacity: 1
       }); 
 
-			var matrix = new THREE.Matrix4();
-			this.mesh = new THREE.InstancedMesh( this.model.geometry, material, 120 );      
+			var matrix = new Matrix4();
+			this.mesh = new InstancedMesh( this.model.geometry, material, this.api.count );      
 
-			for ( var i = 0; i < 120; i ++ ) {
+			for ( var i = 0; i < this.api.count; i ++ ) {
 				this.randomizeMatrix( matrix );
 				this.mesh.setMatrixAt( i, matrix );
 			}
@@ -52,39 +88,70 @@ export default class {
     }).then(() => {
       this.animate();
     });
+  }
 
-    // If you want to set bg color.
-    // this.scene.background = new THREE.Color( 0xFFFFFF );
+  /**
+   * Clean scene.
+   */
+  cleanObjects() {
+    let meshes = [];
 
-    this.camera.position.z = 8;
+    this.scene.traverse(object => {
+      if (object.isMesh) meshes.push(object);
+    });
+
+    meshes.forEach(mesh => {
+      mesh.material.dispose();
+      mesh.geometry.dispose();
+      this.scene.remove( mesh );
+    });
+  }
+
+  reset() {
+    this.cleanObjects();
+    this.initObjects();
   }
 
   /**
    * Prepare scene.
    */
   createScene() {
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); 
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.scene = new Scene();
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); 
+    this.renderer = new WebGLRenderer({ alpha: true });
     this.renderer.setClearColor( 0xffffff, 0);
 
-    // var light = new THREE.AmbientLight( 0x404040, 2 ); // soft white light
+    // var light = new AmbientLight( 0x404040, 2 ); // soft white light
     // this.scene.add( light );
 
-    var light = new THREE.PointLight( 0xffffff, 1.3, 100 );
+    var light = new PointLight( 0xffffff, 1.3, 100 );
     light.position.set( 0, 0, 20 );
     this.scene.add( light );
 
     // If we need to downgrade resolution fo perfomance reasons.
-    if(this.downgradeResolution) {
-      this.renderer.setSize(window.innerWidth/2, window.innerHeight/2);
-    } else {
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
+    this.resize();
 
     document
       .getElementById('bg-3d-container')
       .appendChild( this.renderer.domElement );
+  }
+
+  /**
+   * Resize.
+   */
+  resize() {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    // If we need to downgrade resolution fo perfomance reasons.
+    if(this.downgradeResolution) {
+      width /= 2; 
+      height /= 2;
+    } 
+
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
   }
 
   /**
@@ -94,8 +161,8 @@ export default class {
     requestAnimationFrame( () => this.animate() );
 
     // Animatiom bit
-    this.mesh.rotation.y += 0.01;
-    this.mesh.rotation.z += 0.01;
+    this.mesh.rotation.y += this.api.rotationYSpeed;
+    this.mesh.rotation.z += this.api.rotationZSpeed;
 
     this.renderer.render( this.scene, this.camera );
   }
@@ -104,11 +171,11 @@ export default class {
    * Dummy green test cube.
    */
   createCube() {
-    const geometry = new THREE.BoxGeometry();
-    // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    const geometry = new BoxGeometry();
+    // const material = new MeshBasicMaterial( { color: 0x00ff00 } );
 
-    const material = new THREE.MeshNormalMaterial();
-    const cube = new THREE.Mesh( geometry, material );
+    const material = new MeshNormalMaterial();
+    const cube = new Mesh( geometry, material );
     
     return cube;
   }
@@ -121,15 +188,15 @@ export default class {
     
     return new Promise(  (resolve, reject) => {
       gltfLoader.load('public/models/disney/model.gltf', (gltf) => {
-        const material = new THREE.MeshNormalMaterial();
+        const material = new MeshNormalMaterial();
 
 
-        var lambertWhiteMaterial = new THREE.MeshStandardMaterial({
+        /* var lambertWhiteMaterial = new MeshStandardMaterial({
           color: 0x6e6e6e, 
-          side: THREE.DoubleSide,
+          side: DoubleSide,
           emissive: 0x777777,
           opacity: 1
-        });
+        }); */
 
         const object = gltf.scene;
  
@@ -143,8 +210,8 @@ export default class {
         //object.scale.y = 100;
         // object.scale.z = 100;
 
-        const box = new THREE.Box3().setFromObject( object );
-        const center = box.getCenter( new THREE.Vector3() );
+        const box = new Box3().setFromObject( object );
+        const center = box.getCenter( new Vector3() );
 
         object.position.x += ( object.position.x - center.x );
         object.position.y += ( object.position.y - center.y );
@@ -179,10 +246,10 @@ export default class {
 
   randomizeMatrix(matrix) {
 
-    var position = new THREE.Vector3();
-    var rotation = new THREE.Euler();
-    var quaternion = new THREE.Quaternion();
-    var scale = new THREE.Vector3();
+    var position = new Vector3();
+    var rotation = new Euler();
+    var quaternion = new Quaternion();
+    var scale = new Vector3();
 
     const spreadMin = 5;
     const spreadMax = 10;
