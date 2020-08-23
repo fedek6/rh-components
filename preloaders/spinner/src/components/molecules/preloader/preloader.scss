@@ -8,7 +8,7 @@ $m-animation-speed: 1500ms !default;
 
 /// Hide animation speed.
 /// @type Time
-$m-hide-animation-speed: 1000ms !default;
+$m-preloader-hide-animation-speed: 1000ms !default;
 
 /// Spinner preloader.
 ///
@@ -18,7 +18,7 @@ $m-hide-animation-speed: 1000ms !default;
 .m-preloader {
   z-index: 9999;
   display: none;
-  transition: opacity $m-hide-animation-speed ease-out;
+  transition: opacity $m-preloader-hide-animation-speed ease-out;
   opacity: 0;
 
   ///
