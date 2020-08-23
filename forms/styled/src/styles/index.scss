@@ -1,0 +1,8 @@
+$body-color: slateblue;
+
+body {
+  color: $body-color;
+  font-family: sans-serif;
+}
+
+@import "../components/atoms/range-slider/range-slider.scss";

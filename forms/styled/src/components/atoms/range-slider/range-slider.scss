@@ -1,0 +1,119 @@
+/// Background color.
+/// @type Color
+$a-range-slider-thumb-color: Silver !default;
+
+/// Track color.
+/// @type Color
+$a-range-slider-track-color: Silver !default;
+
+/// Thumb size.
+/// @type Size
+$a-range-slider-size: 16px !default;
+
+/// Track height.
+/// @type Height
+$a-range-slider-track-height: 1px !default;
+
+/// Thumb browser prefixes.
+/// @type Array
+$thumb-browser-prefixes: -webkit-slider-thumb, -moz-range-thumb, -ms-thumb;
+
+/// Track browser prefixes.
+/// @type Array
+$track-browser-prefixes: -webkit-slider-runnable-track, -moz-range-track, -ms-track;
+
+/// Range slider.
+///
+/// @methodology ABEM
+/// @link https://css-tricks.com/abem-useful-adaptation-bem/
+/// @author Konrad Fedorczyk <konrad.fedorczyk@realhe.ro>
+.a-range-slider {
+  width: 100%;
+  background: transparent;
+
+  ///
+  /// Reset
+  ///
+  -webkit-appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -($a-range-slider-size / 2) + $a-range-slider-track-height;
+  }
+
+  @each $thumb-prefix in $thumb-browser-prefixes {
+    &::#{$thumb-prefix} {
+      border-radius: 0%;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  &::-ms-track {
+    width: 100%;
+    cursor: pointer;
+    background: transparent; 
+    border-color: transparent;
+    color: transparent;
+  }
+
+  &:focus {
+    outline: none; 
+  }
+
+  ///
+  /// Modifiers
+  ///
+
+  // Standard "generic" theme.
+  &.-standard {
+    // Thumb style
+    @each $thumb-prefix in $thumb-browser-prefixes {
+      &::#{$thumb-prefix} {
+        height: $a-range-slider-size;
+        width: $a-range-slider-size;
+        background: $a-range-slider-thumb-color;
+      }
+    }
+
+    // Track style
+    @each $track-prefix in $track-browser-prefixes {
+      &::#{$track-prefix} {
+        width: 100%;
+        height: $a-range-slider-track-height;
+        cursor: pointer;
+        box-shadow: none;
+        background: $a-range-slider-track-color;
+        border-radius: none;
+        border: none;
+      }
+    }
+  }
+
+  // Round thumb.
+  &.-round {
+    // Thumb styles
+    @each $thumb-prefix in $thumb-browser-prefixes {
+      &::#{$thumb-prefix} {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  // Disabled.
+  &.-disabled {
+    // Thumb styles
+    @each $thumb-prefix in $thumb-browser-prefixes {
+      &::#{$thumb-prefix} {
+        cursor: not-allowed;
+      }
+    }
+
+    // Track style
+    @each $track-prefix in $track-browser-prefixes {
+      &::#{$track-prefix} {
+        cursor: not-allowed;
+      }
+    }
+  }
+}
