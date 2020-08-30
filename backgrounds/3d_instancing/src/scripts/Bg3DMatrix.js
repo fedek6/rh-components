@@ -43,6 +43,10 @@ export class Bg3DMatrix {
     this.api = api;
     this.animating = false;
 
+    this.changableKeys = [
+      'cameraZPosition'
+    ];
+
     this.init();
     this.initObjects();
   }
@@ -166,11 +170,27 @@ export class Bg3DMatrix {
   animate() {
     requestAnimationFrame( () => this.animate() );
 
+    // this.striveFor();
+
     // Animatiom bit
     this.mesh.rotation.y += this.api.rotationYSpeed;
     this.mesh.rotation.z += this.api.rotationZSpeed;
 
+    // https://github.com/mrdoob/three.js/blob/master/examples/webgl_materials_bumpmap.html
+    this.camera.position.z += 0.05 * ( this.api.cameraZPosition - this.camera.position.z ); 
+
     this.renderer.render( this.scene, this.camera );
+  }
+
+  /**
+   * Handle API changes.
+   */
+  striveFor() {
+    this.changableKeys.forEach((key) => {
+      if(this.api[key] !== this.api[key]) {
+        this.api[key] = this.api[key];
+      }
+    });
   }
 
   /**
